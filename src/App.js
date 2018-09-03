@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 // import electron from 'electron'
+import jsmediatags from 'jsmediatags'
 import walk from './walk'
 import path from 'path'
 import logo from './logo.svg';
 import './App.css';
+
 const { remote } = window.require('electron');
 const fs = remote.require('fs')
 const dialog = remote.dialog
@@ -12,26 +14,32 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      src: ''
+      src: '',
+      seeking: false
     }
   }
 
   componentDidMount() {
-    var player = document.getElementById('audio');
-    var progressBar = document.getElementById('seekbar');
+    var audio = document.getElementById('audio');
     var seekslider = document.getElementById("seekslider");
-    player.addEventListener("timeupdate", function() {
-      var currentTime = player.currentTime;
-      var duration = player.duration;
-      progressBar.value = (currentTime/duration || 0)
-      seekslider.value = (currentTime/duration || 0) * 100
+    audio.addEventListener("timeupdate", () => {
+      var currentTime = audio.currentTime;
+      var duration = audio.duration;
+      seekslider.value = currentTime
     });
+    audio.addEventListener("loadeddata", () => {
+      seekslider.max = audio.duration
+    })
+    audio.addEventListener("loadedmetadata", (e) => {
+      console.log(e)
+      console.log('loaded metadata')
+    })
   }
 
   seek(){
     var audio = document.getElementById('audio');
     var seekslider = document.getElementById("seekslider");
-    var seekto = audio.duration * (seekslider.value / 100);
+    var seekto = seekslider.value;
     audio.currentTime = seekto;
   }
 
@@ -39,11 +47,28 @@ class App extends Component {
     dialog.showOpenDialog({
       properties: ['openDirectory']
     }, (result) => {
+      if (result === undefined) return
       var songs = walk(result[0])
-      // console.log(songs)
-      fs.readFile(songs[0], (err, data) => {
+      console.log(songs)
+      fs.readFile(songs[32], (err, data) => {
+        var extension = path.extname(songs[32]);
+        var lrcPath = songs[32].replace(extension, '.lrc')
+        console.log(lrcPath)
+        var file = path.basename(songs[32],extension);
+        // replace extension with .lrc
+        console.log(file)
+        const audioBlob = new Blob([data], {type: "audio/*"})
+        // From remote host
+        jsmediatags.read(audioBlob, {
+          onSuccess: function(tag) {
+            console.log(tag);
+          },
+          onError: function(error) {
+            console.log(error);
+          }
+        });
         this.setState({
-          src: URL.createObjectURL(new Blob([data], {type: "audio/*"}))
+          src: URL.createObjectURL(audioBlob)
         })
       });
     })
@@ -52,15 +77,15 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <progress id="seekbar" value="0" max="1" style={{width: '20%'}}></progress><br/>
         <input
           id="seekslider"
           type="range"
           min="0"
-          max="100"
+          max="0"
           defaultValue="0"
           step="1"
-          onInput={(e) => this.seek(e)}
+          style={{width: '50%'}}
+          onChange={(e) => this.seek(e)}
         >
         </input><br/>
         <button onClick={() => this.handleClick()}>
@@ -69,7 +94,6 @@ class App extends Component {
         <audio
           id="audio"
           controls
-          onTimeUpdate={() => this.timeUpdate()}
           src={this.state.src}>
           Your browser does not support the <code>audio</code> element.
         </audio><br/>

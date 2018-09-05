@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import Index from './containers/index'
-import SongList from './containers/SongList'
+import App from './App/App'
+import SongList from './SongList'
 
 export default () => {
   return (
@@ -10,7 +10,7 @@ export default () => {
         <Route
           exact
           path='/'
-          component={Index}
+          component={SongList}
         />
       </Switch>
     </Router>

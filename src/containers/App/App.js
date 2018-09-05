@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { Layout, Menu, Icon } from 'antd'
-import AppRoutes from './router'
-import './index.css'
+import '../index.css'
 
 const { Footer, Sider, Content } = Layout
 
-class SiderDemo extends Component {
+class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -71,7 +70,7 @@ class SiderDemo extends Component {
             </Menu>
           </Sider>
           <Content style={{background: '#fff', minHeight: 280, height: this.state.height - 80}}>
-            <AppRoutes />
+            Content {this.state.height}
           </Content>
         </Layout>
         <Footer style={{
@@ -90,4 +89,4 @@ class SiderDemo extends Component {
   }
 }
 
-export default SiderDemo
+export default App

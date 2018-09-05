@@ -1,11 +1,11 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import Router from './router'
+import KafeApp from './containers'
 import { store } from './redux/store'
 
 const App = () => (
   <Provider store={store}>
-    <Router />
+    <KafeApp />
   </Provider>
 )
 

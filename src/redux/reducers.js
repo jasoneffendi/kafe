@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux'
-import indexReducer from './index/reducer'
+import index from './index/reducer'
+import songList from './songList/reducer'
 
 const allReducers = {
-  indexReducer
+  index,
+  songList
 }
 
 export const rootReducer = combineReducers(allReducers)

@@ -1,18 +1,28 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import App from './App/App'
 import SongList from './SongList'
+import PlayList from './PlayList'
+import Settings from './Settings'
 
-export default () => {
-  return (
-    <Router>
-      <Switch>
+export default class AppRouter extends Component {
+  render () {
+    const { url } = this.props
+    return (
+      <div>
         <Route
           exact
-          path='/'
+          path={`${url}`}
           component={SongList}
         />
-      </Switch>
-    </Router>
-  )
+        <Route
+          path={`${url}/playlist`}
+          component={PlayList}
+        />
+        <Route
+          path={`${url}/settings`}
+          component={Settings}
+        />
+      </div>
+    )
+  }
 }

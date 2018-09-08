@@ -1,32 +1,64 @@
 import React, { Component } from 'react'
-import { Table, Button } from 'antd';
+import { connect } from 'react-redux'
+import songListAction from '../../redux/songList/actions'
+import { Table, Button, Dropdown, Icon, Menu } from 'antd'
+
+const { remote } = window.require('electron')
+const fs = remote.require('fs')
+const dialog = remote.dialog
+
+const { openDialog } = songListAction
+
+const menu = (
+  <Menu>
+    <Menu.Item>
+      Action 1
+    </Menu.Item>
+    <Menu.Item>
+      Action 2
+    </Menu.Item>
+  </Menu>
+);
+
+const expandedRowRender = record => <p>{record.description}</p>;
 
 const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
+  title: 'Title',
+  dataIndex: 'title',
 }, {
-  title: 'Age',
-  dataIndex: 'age',
+  title: 'Album',
+  dataIndex: 'album',
 }, {
-  title: 'Address',
-  dataIndex: 'address',
-}];
+  title: 'Artist',
+  dataIndex: 'artist',
+},
+// {
+//   title: 'Action',
+//   dataIndex: 'operation',
+//   key: 'operation',
+//   render: () => (
+//     <span className="table-operation">
+//       <a href="javascript:;">Pause</a>
+//       <a href="javascript:;">Stop</a>
+//       <Dropdown overlay={menu}>
+//         <a href="javascript:;">
+//           More <Icon type="down" />
+//         </a>
+//       </Dropdown>
+//     </span>
+//   ),
+// }
+];
 
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
-
-export default class SongList extends Component {
-  state = {
-    selectedRowKeys: [], // Check here to configure the default column
-    loading: false,
-  };
+class SongList extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selectedRowKeys: [], // Check here to configure the default column
+      songs: [],
+      loading: false
+    }
+  }
 
   start = () => {
     this.setState({ loading: true });
@@ -44,6 +76,30 @@ export default class SongList extends Component {
     this.setState({ selectedRowKeys });
   }
 
+  openDialogWindow () {
+    dialog.showOpenDialog({
+      properties: ['openDirectory']
+    }, async (result) => {
+      if (result === undefined) console.log('no results')
+      console.log(result)
+      this.props.openDialog(result[0])
+      // let songs = walk(result[0])
+    })
+  }
+
+  componentDidMount () {
+    console.log('songlist did mount')
+    console.log(this.props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log(nextProps, 'props of songlist')
+    const { songs } = nextProps
+    this.setState({
+      songs
+    })
+  }
+
   render() {
     const { loading, selectedRowKeys } = this.state;
     const rowSelection = {
@@ -56,8 +112,8 @@ export default class SongList extends Component {
         <div style={{ marginBottom: 16 }}>
           <Button
             type="primary"
-            onClick={this.start}
-            disabled={!hasSelected}
+            onClick={() => this.openDialogWindow()}
+            // disabled={!hasSelected}
             loading={loading}
           >
             Reload
@@ -66,8 +122,22 @@ export default class SongList extends Component {
             {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
           </span>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+        <Table 
+        rowSelection={rowSelection}
+        expandedRowRender={expandedRowRender}
+        columns={columns}
+        dataSource={this.state.songs}
+        pagination={false}
+        size={'small'}
+        />
       </div>
     );
   }
 }
+
+export default connect(
+  state => ({
+    songs: state.songList.songs
+  }),
+  { openDialog }
+)(SongList)

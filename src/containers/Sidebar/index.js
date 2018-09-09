@@ -1,15 +1,8 @@
 import React, { Component } from 'react'
 import { Layout, Menu, Icon } from 'antd'
-import { Router, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const { Footer, Sider, Content } = Layout
-
-const stripTrailingSlash = str => {
-  if (str.substr(-1) === '/') {
-    return str.substr(0, str.length - 1)
-  }
-  return str
-}
+const { Sider } = Layout
 
 class Sidebar extends Component {
   constructor (props) {
@@ -26,7 +19,6 @@ class Sidebar extends Component {
   }
 
   render () {
-    // const url = stripTrailingSlash(this.props.match.url)
     const { url } = this.props
     console.log(this.props)
     return (

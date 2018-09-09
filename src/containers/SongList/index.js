@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import songListAction from '../../redux/songList/actions'
-import { Table, Button, Dropdown, Icon, Menu } from 'antd'
+import { Button } from 'antd'
+import { Column, Table, AutoSizer, defaultTableRowRenderer } from 'react-virtualized';
+import 'react-virtualized/styles.css';
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -9,46 +11,6 @@ const dialog = remote.dialog
 
 const { openDialog } = songListAction
 
-const menu = (
-  <Menu>
-    <Menu.Item>
-      Action 1
-    </Menu.Item>
-    <Menu.Item>
-      Action 2
-    </Menu.Item>
-  </Menu>
-);
-
-const expandedRowRender = record => <p>{record.description}</p>;
-
-const columns = [{
-  title: 'Title',
-  dataIndex: 'title',
-}, {
-  title: 'Album',
-  dataIndex: 'album',
-}, {
-  title: 'Artist',
-  dataIndex: 'artist',
-},
-// {
-//   title: 'Action',
-//   dataIndex: 'operation',
-//   key: 'operation',
-//   render: () => (
-//     <span className="table-operation">
-//       <a href="javascript:;">Pause</a>
-//       <a href="javascript:;">Stop</a>
-//       <Dropdown overlay={menu}>
-//         <a href="javascript:;">
-//           More <Icon type="down" />
-//         </a>
-//       </Dropdown>
-//     </span>
-//   ),
-// }
-];
 
 class SongList extends Component {
   constructor(props) {
@@ -56,7 +18,10 @@ class SongList extends Component {
     this.state = {
       selectedRowKeys: [], // Check here to configure the default column
       songs: [],
-      loading: false
+      width: 0,
+      height: 0,
+      loading: false,
+      nowPlaying: {}
     }
   }
 
@@ -71,65 +36,140 @@ class SongList extends Component {
     }, 1000);
   }
 
+  componentWillMount() {
+    console.log(this.props, 'willmount props')
+    // const { songs } = this.props
+    // this.setState({
+    //   songs
+    // })
+  }
+  
+  componentDidMount () {
+    console.log('songlist did mount')
+    console.log(this.props)
+    const { songs, width, height } = this.props
+    this.setState({
+      songs,
+      width,
+      height
+    })
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log(nextProps, 'props of songlist')
+    const { songs, width, height } = nextProps
+    this.setState({
+      songs,
+      width,
+      height
+    })
+  }
+
+  componentWillUnmount () {
+    console.log('will unmount')
+  }
+
   onSelectChange = (selectedRowKeys) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
 
+  rowRenderer = (props) => {
+    const { nowPlaying } = this.state
+    let { style, rowData } = props
+    console.log(props, 'props of row')
+    // if (this.state)
+    if (nowPlaying.key === rowData.key) {
+      Object.assign(style, {backgroundColor: 'red'})
+    }
+    console.log(style)
+    console.log(props, 'props of row after assign')
+    return (
+      React.createElement(defaultTableRowRenderer, props)
+  )}
+
+  // rowRenderer = ({
+  //   className,
+  //   columns,
+  //   index,
+  //   isScrolling,
+  //   onRowClick,
+  //   onRowDoubleClick,
+  //   rowData,
+  //   style
+  // }) => {
+  //   console.log(rowData)
+  //   return (
+  //     React.createElement(defaultTableRowRenderer, {
+  //       className,
+  //       columns,
+  //       index,
+  //       isScrolling,
+  //       onRowClick,
+  //       onRowDoubleClick,
+  //       rowData,
+  //       style,
+  //       key: rowData.key
+  //     })
+  // )}
+
+  handleDoubleClick = ({event, index, rowData}) => {
+    console.log('hey')
+    this.setState({
+      nowPlaying: rowData
+    })
+  }
+
   openDialogWindow () {
     dialog.showOpenDialog({
       properties: ['openDirectory']
-    }, async (result) => {
-      if (result === undefined) console.log('no results')
+    }, (result) => {
+      if (result === undefined) return
       console.log(result)
       this.props.openDialog(result[0])
       // let songs = walk(result[0])
     })
   }
 
-  componentDidMount () {
-    console.log('songlist did mount')
-    console.log(this.props)
-  }
-
-  componentWillReceiveProps (nextProps) {
-    console.log(nextProps, 'props of songlist')
-    const { songs } = nextProps
-    this.setState({
-      songs
-    })
-  }
-
   render() {
-    const { loading, selectedRowKeys } = this.state;
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-    const hasSelected = selectedRowKeys.length > 0;
+    const { songs, loading, height, width} = this.state;
     return (
-      <div>
-        <div style={{ marginBottom: 16 }}>
-          <Button
-            type="primary"
-            onClick={() => this.openDialogWindow()}
-            // disabled={!hasSelected}
-            loading={loading}
-          >
-            Reload
-          </Button>
-          <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-          </span>
-        </div>
-        <Table 
-        rowSelection={rowSelection}
-        expandedRowRender={expandedRowRender}
-        columns={columns}
-        dataSource={this.state.songs}
-        pagination={false}
-        size={'small'}
-        />
+      <div style={{}}>
+        <Button
+          type="primary"
+          onClick={() => this.openDialogWindow()}
+          // disabled={!hasSelected}
+          loading={loading}
+        >
+          Reload
+        </Button>
+        <Table
+          width={width}
+          height={height}
+          headerHeight={20}
+          rowHeight={30}
+          rowCount={songs.length}
+          rowGetter={({ index }) => songs[index]}
+          rowRenderer={this.rowRenderer}
+          // rowGetter={({ index }) => console.log(songs[index])}
+          onRowDoubleClick={(props) => this.handleDoubleClick(props)}
+        >
+          <Column
+            label='Name'
+            dataKey='title'
+            width={width/3}
+          />
+          <Column
+            width={width/3}
+            label='Album'
+            dataKey='album'
+          />
+          <Column
+            width={width/3}
+            label='Artist'
+            dataKey='artist'
+          />
+        </Table>
       </div>
     );
   }

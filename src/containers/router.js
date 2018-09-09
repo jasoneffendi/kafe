@@ -6,21 +6,21 @@ import Settings from './Settings'
 
 export default class AppRouter extends Component {
   render () {
-    const { url } = this.props
+    const { url, height, width } = this.props
     return (
       <div>
         <Route
           exact
           path={`${url}`}
-          component={SongList}
+          render={(props) => (<SongList width={width} height={height} />)}
         />
         <Route
           path={`${url}/playlist`}
-          component={PlayList}
+          render={(props) => (<PlayList width={width} height={height} />)}
         />
         <Route
           path={`${url}/settings`}
-          component={Settings}
+          render={(props) => (<Settings width={width} height={height} />)}
         />
       </div>
     )

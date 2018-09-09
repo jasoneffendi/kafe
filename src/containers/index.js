@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Layout, Menu, Icon } from 'antd'
 import { Router, Link } from 'react-router-dom'
+import { Column, Table, AutoSizer } from 'react-virtualized';
 import Sidebar from './Sidebar'
 import AppRoutes from './router'
-// import RouteWrapper from './RouteWrapper'
 import './index.css'
 
 const { Footer, Sider, Content } = Layout
@@ -54,15 +54,25 @@ class KafeApp extends Component {
   render () {
     console.log('container is rerendering')
     const url = stripTrailingSlash(this.props.match.url)
+    const { height, width } = this.state
     return (
       <Layout
         style={{minHeight: 300, height: this.state.height}}
       >
         <Layout>
           <Sidebar url={url}/>
-          <Content style={{background: '#fff', minHeight: 280, height: this.state.height - 80}}>
-            <AppRoutes url={url} />
-            {/* <RouteWrapper /> */}
+          <Content style={{background: '#fff', minHeight: 280, height: height - 80}}>
+            <AutoSizer>
+              {
+                ({width, height}) => {
+                  console.log(width, height, 'of autosizer')
+                  // console.log(this.state.height)
+                  return (
+                    <AppRoutes url={url} height={height} width={width} />
+                  )
+                }
+              }
+            </AutoSizer>
           </Content>
         </Layout>
         <Footer style={{
@@ -70,11 +80,6 @@ class KafeApp extends Component {
           padding: 0,
           height: 80
         }}>
-          {/* <Icon
-            className='trigger'
-            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-            onClick={() => this.toggle()}
-          /> */}
         </Footer>
       </Layout>
     )

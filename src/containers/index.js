@@ -9,7 +9,7 @@ import './index.css'
 
 const { remote } = window.require('electron')
 const windowActions = remote.getCurrentWindow();
-const { Footer, Sider, Content } = Layout
+const { Header, Footer, Sider, Content } = Layout
 
 const stripTrailingSlash = str => {
   if (str.substr(-1) === '/') {
@@ -32,24 +32,6 @@ class KafeApp extends Component {
     console.log('container mounted')
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    // document.getElementById("min-btn").addEventListener("click", function (e) {
-    //   const window = remote.getCurrentWindow();
-    //   window.minimize();
-    // });
-    
-    // document.getElementById("max-btn").addEventListener("click", function (e) {
-    //   const window = remote.getCurrentWindow();
-    //   if (!window.isMaximized()) {
-    //     window.maximize();
-    //   } else {
-    //     window.unmaximize();
-    //   }
-    // });
-      
-    // document.getElementById("close-btn").addEventListener("click", function (e) {
-    //   const window = remote.getCurrentWindow();
-    //   window.close();
-    // });
   }
 
   componentWillUnmount () {
@@ -59,6 +41,22 @@ class KafeApp extends Component {
   componentWillReceiveProps (nextProps) {
     console.log(nextProps, 'props of container')
     console.log('will receive props')
+  }
+
+  minimizeWindow () {
+    windowActions.minimize();
+  }
+
+  maximizeWindow () {
+    if (!windowActions.isMaximized()) {
+      windowActions.maximize();
+    } else {
+      windowActions.unmaximize();
+    }
+  }
+
+  closeWindow () {
+    windowActions.close();
   }
 
   updateWindowDimensions = () => {
@@ -76,6 +74,7 @@ class KafeApp extends Component {
     console.log('container is rerendering')
     const url = stripTrailingSlash(this.props.match.url)
     const { height, width } = this.state
+    const headerHeight = 20
     const minHeight = 300
     const minFooterHeight = 100
     return (
@@ -84,30 +83,26 @@ class KafeApp extends Component {
       >
         <Layout>
           <Sidebar url={url}/>
-          <div id="title-bar">
-              <div id="title-bar-btns">
-                    {/* <Button id="min-btn">-</Button>
-                    <Button id="max-btn">+</Button>
-                    <Button id="close-btn">x</Button> */}
-                    
-              </div>
-              <Button onClick={() => console.log(windowActions.minimize())}>-</Button>
-              <Button >+</Button>
-              <Button >x</Button>
-          </div>
-          <Content style={{ minHeight: minFooterHeight, height: height - minFooterHeight}}>
-            <AutoSizer>
-              {
-                ({width, height}) => {
-                  console.log(width, height, 'of autosizer')
-                  // console.log(this.state.height)
-                  return (
-                    <AppRoutes url={url} height={height} width={width} />
-                  )
+          <Layout>
+            <Header style={{textAlign: 'right'}}>
+              <Button id="zero-align-icon" style={{ background: '#00ca56' }} size="small" shape="circle" icon="arrows-alt" onClick={() => this.maximizeWindow()} />
+              <Button id="zero-align-icon" style={{ background: '#ffbd4c' }} size="small" shape="circle" icon="minus" onClick={() => this.minimizeWindow()} />
+              <Button id="zero-align-icon" style={{ background: '#ff5c5c' }} size="small" shape="circle" icon="close" onClick={() => this.closeWindow()} />
+            </Header>
+            <Content style={{ minHeight: minFooterHeight, height: height - minFooterHeight}}>
+              <AutoSizer>
+                {
+                  ({width, height}) => {
+                    console.log(width, height, 'of autosizer')
+                    // console.log(this.state.height)
+                    return (
+                      <AppRoutes url={url} height={height} width={width} />
+                    )
+                  }
                 }
-              }
-            </AutoSizer>
-          </Content>
+              </AutoSizer>
+            </Content>
+          </Layout>
         </Layout>
         <Footer style={{
           background: 'blue',

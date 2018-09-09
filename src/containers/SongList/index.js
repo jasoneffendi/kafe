@@ -148,7 +148,7 @@ class SongList extends Component {
           width={width}
           height={height}
           headerHeight={20}
-          style={{fontFamily: 'helvetica neue', fontSize: 'small'}}
+          style={{fontFamily: 'helvetica neue', fontSize: 'small', color: 'white'}}
           rowHeight={20}
           rowCount={songs.length}
           rowGetter={({ index }) => songs[index]}

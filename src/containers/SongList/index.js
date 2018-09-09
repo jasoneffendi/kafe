@@ -80,7 +80,7 @@ class SongList extends Component {
     console.log(props, 'props of row')
     // if (this.state)
     if (nowPlaying.key === rowData.key) {
-      Object.assign(style, {backgroundColor: 'red'})
+      Object.assign(style, {backgroundColor: 'grey'})
     }
     console.log(style)
     console.log(props, 'props of row after assign')
@@ -133,6 +133,7 @@ class SongList extends Component {
 
   render() {
     const { songs, loading, height, width} = this.state;
+    console.log(height, 'height of index')
     return (
       <div style={{}}>
         <Button
@@ -147,7 +148,8 @@ class SongList extends Component {
           width={width}
           height={height}
           headerHeight={20}
-          rowHeight={30}
+          style={{fontFamily: 'helvetica neue', fontSize: 'small'}}
+          rowHeight={20}
           rowCount={songs.length}
           rowGetter={({ index }) => songs[index]}
           rowRenderer={this.rowRenderer}

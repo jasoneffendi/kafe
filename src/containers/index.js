@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { Layout, Menu, Icon } from 'antd'
+import { Layout, Menu, Icon, Button } from 'antd'
 import { Router, Link } from 'react-router-dom'
 import { Column, Table, AutoSizer } from 'react-virtualized';
+// import { remote } from 'electron'
 import Sidebar from './Sidebar'
 import AppRoutes from './router'
 import './index.css'
 
+const { remote } = window.require('electron')
+const windowActions = remote.getCurrentWindow();
 const { Footer, Sider, Content } = Layout
 
 const stripTrailingSlash = str => {
@@ -29,6 +32,24 @@ class KafeApp extends Component {
     console.log('container mounted')
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
+    // document.getElementById("min-btn").addEventListener("click", function (e) {
+    //   const window = remote.getCurrentWindow();
+    //   window.minimize();
+    // });
+    
+    // document.getElementById("max-btn").addEventListener("click", function (e) {
+    //   const window = remote.getCurrentWindow();
+    //   if (!window.isMaximized()) {
+    //     window.maximize();
+    //   } else {
+    //     window.unmaximize();
+    //   }
+    // });
+      
+    // document.getElementById("close-btn").addEventListener("click", function (e) {
+    //   const window = remote.getCurrentWindow();
+    //   window.close();
+    // });
   }
 
   componentWillUnmount () {
@@ -55,13 +76,26 @@ class KafeApp extends Component {
     console.log('container is rerendering')
     const url = stripTrailingSlash(this.props.match.url)
     const { height, width } = this.state
+    const minHeight = 300
+    const minFooterHeight = 100
     return (
       <Layout
-        style={{minHeight: 300, height: this.state.height}}
+        style={{minHeight, height: this.state.height}}
       >
         <Layout>
           <Sidebar url={url}/>
-          <Content style={{background: '#fff', minHeight: 280, height: height - 80}}>
+          <div id="title-bar">
+              <div id="title-bar-btns">
+                    {/* <Button id="min-btn">-</Button>
+                    <Button id="max-btn">+</Button>
+                    <Button id="close-btn">x</Button> */}
+                    
+              </div>
+              <Button onClick={() => console.log(windowActions.minimize())}>-</Button>
+              <Button >+</Button>
+              <Button >x</Button>
+          </div>
+          <Content style={{ minHeight: minFooterHeight, height: height - minFooterHeight}}>
             <AutoSizer>
               {
                 ({width, height}) => {
@@ -78,7 +112,7 @@ class KafeApp extends Component {
         <Footer style={{
           background: 'blue',
           padding: 0,
-          height: 80
+          height: minFooterHeight
         }}>
         </Footer>
       </Layout>

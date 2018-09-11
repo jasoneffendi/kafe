@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Layout, Menu, Icon, Button } from 'antd'
 import { Router, Link } from 'react-router-dom'
 import { Column, Table, AutoSizer } from 'react-virtualized';
-// import { remote } from 'electron'
 import Sidebar from './Sidebar'
 import AppRoutes from './router'
 import './index.css'
@@ -26,6 +25,10 @@ class KafeApp extends Component {
       height: 0,
       collapsed: true
     }
+  }
+
+  componentWillMount () {
+    // remote.getCurrentWindow().setVibrancy('ultra-dark')
   }
 
   componentDidMount () {
@@ -76,7 +79,7 @@ class KafeApp extends Component {
     const { height, width } = this.state
     const headerHeight = 20
     const minHeight = 300
-    const minFooterHeight = 100
+    const minFooterHeight = 80
     return (
       <Layout
         style={{minHeight, height: this.state.height}}
@@ -84,7 +87,7 @@ class KafeApp extends Component {
         <Layout>
           <Sidebar url={url}/>
           <Layout>
-            <Header style={{textAlign: 'right'}}>
+            <Header style={{textAlign: 'right', marginRight: '6px'}}>
               <Button id="zero-align-icon" style={{ background: '#00ca56' }} size="small" shape="circle" icon="arrows-alt" onClick={() => this.maximizeWindow()} />
               <Button id="zero-align-icon" style={{ background: '#ffbd4c' }} size="small" shape="circle" icon="minus" onClick={() => this.minimizeWindow()} />
               <Button id="zero-align-icon" style={{ background: '#ff5c5c' }} size="small" shape="circle" icon="close" onClick={() => this.closeWindow()} />

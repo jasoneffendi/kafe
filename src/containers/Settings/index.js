@@ -1,13 +1,30 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import songListAction from '../../redux/songList/actions'
 import { Table, Button } from 'antd'
 
-export default class Settings extends Component {
+const { remote } = window.require('electron')
+const dialog = remote.dialog
+
+const { openDialog } = songListAction
+
+class Settings extends Component {
   constructor (props) {
     super(props)
     this.state = {
       selectedRowKeys: [],
       loading: false
     }
+  }
+
+  openDialogWindow () {
+    dialog.showOpenDialog({
+      properties: ['openDirectory']
+    }, (result) => {
+      if (result === undefined) return
+      this.props.openDialog(result[0])
+      // let songs = walk(result[0])
+    })
   }
 
   render () {
@@ -17,7 +34,7 @@ export default class Settings extends Component {
         <div style={{ marginBottom: 16 }}>
           <Button
             type='primary'
-            onClick={() => console.log('hi')}
+            onClick={() => this.openDialogWindow()}
             loading={loading}
           >
             Reload
@@ -28,3 +45,10 @@ export default class Settings extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({
+    songs: state.songList.songs
+  }),
+  { openDialog }
+)(Settings)

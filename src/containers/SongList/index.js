@@ -1,15 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import songListAction from '../../redux/songList/actions'
-import { Button } from 'antd'
 import { Column, Table, AutoSizer, defaultTableRowRenderer } from 'react-virtualized';
 import 'react-virtualized/styles.css';
-
-const { remote } = window.require('electron')
-const fs = remote.require('fs')
-const dialog = remote.dialog
-
-const { openDialog } = songListAction
 
 
 class SongList extends Component {
@@ -88,46 +80,10 @@ class SongList extends Component {
       React.createElement(defaultTableRowRenderer, props)
   )}
 
-  // rowRenderer = ({
-  //   className,
-  //   columns,
-  //   index,
-  //   isScrolling,
-  //   onRowClick,
-  //   onRowDoubleClick,
-  //   rowData,
-  //   style
-  // }) => {
-  //   console.log(rowData)
-  //   return (
-  //     React.createElement(defaultTableRowRenderer, {
-  //       className,
-  //       columns,
-  //       index,
-  //       isScrolling,
-  //       onRowClick,
-  //       onRowDoubleClick,
-  //       rowData,
-  //       style,
-  //       key: rowData.key
-  //     })
-  // )}
-
   handleDoubleClick = ({event, index, rowData}) => {
     console.log('hey')
     this.setState({
       nowPlaying: rowData
-    })
-  }
-
-  openDialogWindow () {
-    dialog.showOpenDialog({
-      properties: ['openDirectory']
-    }, (result) => {
-      if (result === undefined) return
-      console.log(result)
-      this.props.openDialog(result[0])
-      // let songs = walk(result[0])
     })
   }
 
@@ -136,14 +92,6 @@ class SongList extends Component {
     console.log(height, 'height of index')
     return (
       <div style={{}}>
-        <Button
-          type="primary"
-          onClick={() => this.openDialogWindow()}
-          // disabled={!hasSelected}
-          loading={loading}
-        >
-          Reload
-        </Button>
         <Table
           width={width}
           height={height}
@@ -181,5 +129,5 @@ export default connect(
   state => ({
     songs: state.songList.songs
   }),
-  { openDialog }
+  {}
 )(SongList)

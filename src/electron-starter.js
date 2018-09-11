@@ -1,6 +1,7 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
+const remote = electron.remote
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -19,7 +20,8 @@ function createWindow () {
     minHeight: 400,
     minWidth: 300,
     transparent: true,
-    frame: false
+    frame: false,
+    vibrancy: 'ultra-dark'
   })
 
   // and load the index.html of the app.

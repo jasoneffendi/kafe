@@ -1,5 +1,7 @@
 @import '~antd/dist/antd.css';
 
+@border-radius-base: 20px;  
+
 .trigger {
   font-size: 18px;
   line-height: 64px;
@@ -19,11 +21,15 @@
 }
 
 html, body {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0);
 }
 
 .ant-layout {
   background: rgba(0, 0, 0, 0);
+}
+
+.ant-btn {
+  border-radius: 10px
 }
 
 .ant-layout-header {
@@ -36,12 +42,14 @@ html, body {
 }
 
 #zero-align-icon {
-  height: 18px;
-  width: 18px;
-  margin: 1px;
-  vertical-align: 0.1em;
+  height: 12px;
+  width: 12px;
+  margin: 4px 3px;
+  vertical-align: -0.1em;
+  border: 0px solid transparent;
 }
 
 #zero-align-icon > .anticon {
-  vertical-align: 0.05em;
+  vertical-align: 0.5em;
+  font-size: 10px;
 }

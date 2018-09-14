@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Column, Table, AutoSizer, defaultTableRowRenderer } from 'react-virtualized';
+import { List, Column, Table, AutoSizer, defaultTableRowRenderer } from 'react-virtualized';
+import { List as AntdList, Avatar } from 'antd'
 import 'react-virtualized/styles.css';
+
+const Item = AntdList.Item
 
 
 class SongList extends Component {
@@ -80,6 +83,40 @@ class SongList extends Component {
       React.createElement(defaultTableRowRenderer, props)
   )}
 
+  rowRenderer = ({
+    index,       // Index of row
+    isScrolling, // The List is currently being scrolled
+    isVisible,   // This row is visible within the List (eg it is not an overscanned row)
+    key,         // Unique key within array of rendered rows
+    parent,      // Reference to the parent List (instance)
+    style        // Style object to be applied to row (to position it);
+                 // This must be passed through to the rendered row element.
+  }) => {
+    const { songs } = this.state
+    const song = songs[index]
+    const { title, album, artist } = song
+  
+    // If row content is complex, consider rendering a light-weight placeholder while scrolling.
+    // const content = !isVisible
+    //   ? '...'
+    //   : 'string'
+    return (
+      <div
+        className=''
+        onDoubleClick={() => console.log(song)}
+        key={key}
+        style={{...style, color: 'white'}}
+      >
+        <Item>
+          <Item.Meta
+            title={<div className='song-title'>{title}</div>}
+            description={<div className='song-description'>{`${artist} | ${album}`}</div>}
+          />
+        </Item>
+      </div>
+    )
+  }
+
   handleDoubleClick = ({event, index, rowData}) => {
     console.log('hey')
     this.setState({
@@ -91,35 +128,16 @@ class SongList extends Component {
     const { songs, loading, height, width} = this.state;
     console.log(height, 'height of index')
     return (
-      <div style={{}}>
-        <Table
+      <div className='song-list' style={{}}>
+        <List
+          className=''
           width={width}
           height={height}
-          headerHeight={20}
-          style={{fontFamily: 'helvetica neue', fontSize: 'small', color: 'white'}}
-          rowHeight={20}
           rowCount={songs.length}
-          rowGetter={({ index }) => songs[index]}
+          rowHeight={64}
           rowRenderer={this.rowRenderer}
-          // rowGetter={({ index }) => console.log(songs[index])}
-          onRowDoubleClick={(props) => this.handleDoubleClick(props)}
-        >
-          <Column
-            label='Name'
-            dataKey='title'
-            width={width/3}
-          />
-          <Column
-            width={width/3}
-            label='Album'
-            dataKey='album'
-          />
-          <Column
-            width={width/3}
-            label='Artist'
-            dataKey='artist'
-          />
-        </Table>
+          overscanRowCount={5}
+        />
       </div>
     );
   }

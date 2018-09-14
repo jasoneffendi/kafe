@@ -6,7 +6,7 @@ function loadFile(filePath) {
     fs.stat(filePath, (err, stats) => {
       if (err) reject(err)
       mmd.parseFile(filePath, {
-        native: true, skipCovers: true, fileSize: stats.size, duration: true
+        native: true, skipCovers: false
       })
         .then(metadata => {
           resolve(metadata)

@@ -93,7 +93,7 @@ class KafeApp extends Component {
               <Button id="zero-align-icon" style={{ background: '#ff5c5c' }} size="small" shape="circle" icon="close" onClick={() => this.closeWindow()} />
             </Header>
             <Content style={{ minHeight: minFooterHeight, height: height - minFooterHeight}}>
-              <AutoSizer>
+              <AutoSizer unselectable="on">
                 {
                   ({width, height}) => {
                     console.log(width, height, 'of autosizer')
@@ -108,7 +108,7 @@ class KafeApp extends Component {
           </Layout>
         </Layout>
         <Footer style={{
-          background: 'blue',
+          background: '#0A0914',
           padding: 0,
           height: minFooterHeight
         }}>

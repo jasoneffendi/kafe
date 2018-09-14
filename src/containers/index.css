@@ -1,6 +1,12 @@
 @import '~antd/dist/antd.css';
 
-@border-radius-base: 20px;  
+* {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
 
 .trigger {
   font-size: 18px;
@@ -41,6 +47,27 @@ html, body {
   -webkit-app-region:drag;
 }
 
+.ant-layout-sider {
+  -webkit-transition: all .2s;
+  -o-transition: all .2s;
+  transition: all .2s;
+  position: relative;
+  background: #0A0914;
+  min-width: 0;
+}
+
+.ant-menu-dark {
+  background: #0A0914
+}
+
+.song-title {
+  color: white
+}
+
+.song-description {
+  color: white
+}
+
 #zero-align-icon {
   height: 12px;
   width: 12px;
@@ -52,4 +79,8 @@ html, body {
 #zero-align-icon > .anticon {
   vertical-align: 0.5em;
   font-size: 10px;
+}
+
+:focus {
+  outline: none !important;
 }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Layout, Menu, Icon, Button } from 'antd'
 import { Router, Link } from 'react-router-dom'
 import { Column, Table, AutoSizer } from 'react-virtualized';
+import indexActions from '../redux/index/actions'
 import Sidebar from './Sidebar'
 import AppRoutes from './router'
 import './index.css'
@@ -9,6 +11,8 @@ import './index.css'
 const { remote } = window.require('electron')
 const windowActions = remote.getCurrentWindow();
 const { Header, Footer, Sider, Content } = Layout
+
+const { getConfig, getSongs } = indexActions
 
 const stripTrailingSlash = str => {
   if (str.substr(-1) === '/') {
@@ -28,7 +32,7 @@ class KafeApp extends Component {
   }
 
   componentWillMount () {
-    // remote.getCurrentWindow().setVibrancy('ultra-dark')
+    this.props.getConfig()
   }
 
   componentDidMount () {
@@ -87,19 +91,22 @@ class KafeApp extends Component {
         <Layout>
           <Sidebar url={url}/>
           <Layout>
-            <Header style={{textAlign: 'right', marginRight: '6px'}}>
+            <Header 
+              onDoubleClick={() => this.maximizeWindow()}
+              style={{textAlign: 'right', marginRight: '6px'}}
+            >
               <Button id="zero-align-icon" style={{ background: '#00ca56' }} size="small" shape="circle" icon="arrows-alt" onClick={() => this.maximizeWindow()} />
               <Button id="zero-align-icon" style={{ background: '#ffbd4c' }} size="small" shape="circle" icon="minus" onClick={() => this.minimizeWindow()} />
               <Button id="zero-align-icon" style={{ background: '#ff5c5c' }} size="small" shape="circle" icon="close" onClick={() => this.closeWindow()} />
             </Header>
-            <Content style={{ minHeight: minFooterHeight, height: height - minFooterHeight}}>
-              <AutoSizer unselectable="on">
+            <Content className="content" style={{ minHeight: minFooterHeight, height: height - minFooterHeight}}>
+              <AutoSizer className="content-pages">
                 {
                   ({width, height}) => {
                     console.log(width, height, 'of autosizer')
                     // console.log(this.state.height)
                     return (
-                      <AppRoutes url={url} height={height} width={width} />
+                      <AppRoutes url={url} height={height} width={width - 10} />
                     )
                   }
                 }
@@ -108,7 +115,6 @@ class KafeApp extends Component {
           </Layout>
         </Layout>
         <Footer style={{
-          background: '#0A0914',
           padding: 0,
           height: minFooterHeight
         }}>
@@ -118,4 +124,12 @@ class KafeApp extends Component {
   }
 }
 
-export default KafeApp
+export default connect(
+  state => ({
+    config: state.index.config
+  }),
+  {
+    getConfig,
+    getSongs
+  }
+)(KafeApp)

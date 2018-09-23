@@ -8,6 +8,10 @@
   user-select: none;
 }
 
+.darken {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .trigger {
   font-size: 18px;
   line-height: 64px;
@@ -39,7 +43,8 @@ html, body {
 }
 
 .ant-layout-header {
-  background: rgba(0, 0, 0, 0);
+  /* background: rgba(0, 0, 0, 0); */
+  background: black;
   padding: 0 0px;
   height: 20px;
   line-height: 0px;
@@ -52,12 +57,91 @@ html, body {
   -o-transition: all .2s;
   transition: all .2s;
   position: relative;
-  background: #0A0914;
+  /* background: #0A0914; */
+  background: rgba(0, 0, 0, 0);
   min-width: 0;
 }
 
 .ant-menu-dark {
-  background: #0A0914
+  /* background: #0A0914 */
+  background: rgba(0, 0, 0, 0);
+}
+
+.ant-list-item-meta-title {
+  color: rgba(0, 0, 0, 0.65);
+  margin-bottom: 0px;
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.ant-list-item-meta-title > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-list-item-meta-title > div > .title {
+  color: white;
+  margin-bottom: 0px;
+  font-size: 14px;
+  line-height: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ant-list-item-meta-title > div > .duration {
+  color: white;
+  margin-bottom: 0px;
+  font-size: 14px;
+  line-height: 15px;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; */
+}
+
+.ant-list-item-meta-description {
+  color: white;
+  font-size: 14px;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ant-list-item-meta-description > span {
+  color: white;
+  font-size: 14px;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ant-list-item-content {
+  display: flex;
+  flex: 1 1;
+  justify-content: flex-end;
+  color: white
+}
+
+.ant-layout-footer {
+  /* background: #f0f2f5; */
+  background: rgba(0, 0, 0, 0);
+  padding: 24px 50px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+}
+
+.content {
+  background: #0A0A15;
+}
+
+.content-pages {
+  margin: 0px 5px;
+}
+
+.song-list {
+  margin: 0px
 }
 
 .song-title {

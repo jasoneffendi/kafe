@@ -23,15 +23,16 @@ class Sidebar extends Component {
     console.log(this.props)
     return (
       <Sider
+        className='darken'
         trigger={null}
-        collapsible
-        collapsed={this.state.collapsed}
+        // collapsible
+        // collapsed={this.state.collapsed}
         onMouseEnter={() => this.state.collapsed ? this.toggle() : ''}
         onMouseLeave={() => this.state.collapsed ? '' : this.toggle()}
       >
-        <div className='isoLogoWrapper'>
+        {/* <div className='isoLogoWrapper'>
           <h2 style={{color: 'white', textAlign: 'center'}}>Kafe</h2>
-        </div>
+        </div> */}
         <Menu theme='dark' mode='inline' defaultSelectedKeys={['1']}>
           <Menu.Item key='1'>
             <Link to={`${url}`}>
